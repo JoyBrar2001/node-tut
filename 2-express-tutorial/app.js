@@ -1,22 +1,22 @@
 const express = require('express');
 const app = express();
-const logger = require('./logger')
+let { people } = require('./data');
 
-app.use('/api', logger);
+app.use(express.static('./methods-public'));
+app.use(express.urlencoded({ extended: false }));
 
-app.get('/', (req,res) => {
-    res.send('Home Page');
+app.get('/api/people', (req, res) => {
+    res.status(200).json({ success: true, data: people });
 });
-app.get('/about', (req,res) => {
-    res.send('About Page');
-});
-app.get('/api/products', (req,res) => {
-    res.send('Products');
-});
-app.get('/api/items', (req,res) => {
-    res.send('items');
+
+app.post('/login', (req, res) => {
+    const { name } = req.body;
+    if(name){
+        return res.status(200).send(`Welcome ${name}`);
+    }
+    res.status(401).send('Please Provide Valid Credentials');
 });
 
 app.listen(5000, () => {
-    console.log('Server is listeing on port 5000...')
+    console.log('Server is listening on port 5000');
 });
